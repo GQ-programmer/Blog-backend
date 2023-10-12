@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="zgq.cool.blogbackend.mapper.ArticleMapper">
+
+    <resultMap id="BaseResultMap" type="zgq.cool.blogbackend.model.pojo.Article">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="title" column="title" jdbcType="VARCHAR"/>
+            <result property="description" column="description" jdbcType="VARCHAR"/>
+            <result property="userId" column="userId" jdbcType="BIGINT"/>
+            <result property="content" column="content" jdbcType="VARCHAR"/>
+            <result property="coverUrl" column="coverUrl" jdbcType="VARCHAR"/>
+            <result property="createTime" column="createTime" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="updateTime" jdbcType="TIMESTAMP"/>
+            <result property="isDelete" column="isDelete" jdbcType="TINYINT"/>
+    </resultMap>
+    <resultMap id="SearchArtResMap" type="zgq.cool.blogbackend.model.vo.SearchArticleVo">
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="createTime" column="createTime" jdbcType="TIMESTAMP"/>
+        <result property="title" column="title" jdbcType="VARCHAR"/>
+        <result property="userAvataUrl" column="avatarUrl" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,title,description,
+        userId,content,coverUrl,
+        createTime,updateTime,isDelete
+    </sql>
+
+    <select id="searchByText" resultMap="SearchArtResMap">
+        SELECT a.id, a.createTime, a.title, u.avatarUrl
+        FROM user u , article a
+        WHERE u.id = a.userId
+          AND  a.title LIKE '%${searchText}%'
+        ORDER BY a.createTime DESC
+            LIMIT 0, #{searchNum}
+
+    </select>
+</mapper>
