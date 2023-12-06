@@ -21,6 +21,16 @@ public class Article implements Serializable {
     private Long id;
 
     /**
+     * 分类id
+     */
+    private Long articleCategoryId;
+
+    /**
+     * 分类名称
+     */
+    private String articleCategoryName;
+
+    /**
      * 文章标题
      */
     private String title;

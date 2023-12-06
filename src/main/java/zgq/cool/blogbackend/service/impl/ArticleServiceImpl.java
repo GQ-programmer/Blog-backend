@@ -12,9 +12,10 @@ import org.springframework.util.CollectionUtils;
 import zgq.cool.blogbackend.common.ErrorCode;
 import zgq.cool.blogbackend.constant.UserConstant;
 import zgq.cool.blogbackend.exception.BusinessException;
+import zgq.cool.blogbackend.mapper.ArticleCategoryMapper;
 import zgq.cool.blogbackend.mapper.ArticleMapper;
-import zgq.cool.blogbackend.mapper.UserMapper;
 import zgq.cool.blogbackend.model.pojo.Article;
+import zgq.cool.blogbackend.model.pojo.ArticleCategory;
 import zgq.cool.blogbackend.model.pojo.User;
 import zgq.cool.blogbackend.model.request.ArticleAddRequest;
 import zgq.cool.blogbackend.model.request.ArticleUpdateRequest;
@@ -44,40 +45,47 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
     @Autowired
     private ArticleMapper articleMapper;
 
+    @Autowired
+    private ArticleCategoryMapper articleCategoryMapper;
+
     @Override
-    public Page<ArticleVo> listPage(long currentPageNum, long pageSize) {
+    public Page<ArticleVo> listPage(long currentPageNum, long pageSize, long articleCategoryId) {
         if (currentPageNum < 1 || pageSize < 1) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
         QueryWrapper<Article> queryWrapper = new QueryWrapper<>();
         queryWrapper.orderByDesc("createTime");
+        if (articleCategoryId != 0) {
+            queryWrapper.eq("articleCategoryId", articleCategoryId);
+        }
         Page<Article> articlePage = this.page(new Page<Article>(currentPageNum, pageSize), queryWrapper);
         // 得到分页对象中的文章列表
         List<Article> articleList = articlePage.getRecords();
-        if (CollectionUtils.isEmpty(articleList)){
-            throw new BusinessException(ErrorCode.SYSTEM_ERROR);
-        }
-        // 得到作者列表
-        List<Long> userIdList = articleList.stream().map(Article::getUserId).collect(Collectors.toList());
-
-        // 关联查询出每个文章对应的作者信息
         List<ArticleVo> articleVoList = new ArrayList<>();
-        QueryWrapper<User> userQueryWrapper = new QueryWrapper<>();
-        userQueryWrapper.in("id", userIdList);
-        List<User> userList = userService.list(userQueryWrapper);
+        if (!CollectionUtils.isEmpty(articleList)) {
 
-        // 循环取出article，得到userId，在userList中找到对应user，放入articleVo对象中
-        for (Article article : articleList) {
-            ArticleVo articleVo = new ArticleVo();
-            BeanUtils.copyProperties(article, articleVo);
-            Long articleUserId = article.getUserId();
-            for (User user : userList) {
-                if (user.getId().equals(articleUserId)){
-                    articleVo.setCreateUser(user);
-                    break;
+            // 得到作者列表
+            List<Long> userIdList = articleList.stream().map(Article::getUserId).collect(Collectors.toList());
+
+            // 关联查询出每个文章对应的作者信息
+            QueryWrapper<User> userQueryWrapper = new QueryWrapper<>();
+            userQueryWrapper.in("id", userIdList);
+            List<User> userList = userService.list(userQueryWrapper);
+
+            // 循环取出article，得到userId，在userList中找到对应user，放入articleVo对象中
+            for (Article article : articleList) {
+                ArticleVo articleVo = new ArticleVo();
+                BeanUtils.copyProperties(article, articleVo);
+                Long articleUserId = article.getUserId();
+                for (User user : userList) {
+                    if (user.getId().equals(articleUserId)) {
+                        articleVo.setCreateUser(user);
+                        break;
+                    }
                 }
+                articleVoList.add(articleVo);
             }
-            articleVoList.add(articleVo);
+
         }
         Page<ArticleVo> articleVoPage = new Page<>();
         articleVoPage.setRecords(articleVoList);
@@ -127,6 +135,14 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
         if (StringUtils.isBlank(coverUrl)) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "文章封面图URL为空!");
         }
+        // 查询分类
+        Long articleCategoryId = articleAddRequest.getArticleCategoryId();
+        ArticleCategory articleCategory = articleCategoryMapper.selectById(articleCategoryId);
+        if (articleCategory == null) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "分类id不存在!");
+        }
+        article.setArticleCategoryId(articleCategory.getId());
+        article.setArticleCategoryName(articleCategory.getName());
         article.setCoverUrl(coverUrl);
         article.setCreateTime(new Date());
         boolean res = this.save(article);
@@ -186,6 +202,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
         String description = articleUpdateRequest.getDescription();
         String content = articleUpdateRequest.getContent();
         String coverUrl = articleUpdateRequest.getCoverUrl();
+        Long articleCategoryId = articleUpdateRequest.getArticleCategoryId();
         if (StringUtils.isAnyBlank(title, description, content, coverUrl)) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
@@ -210,6 +227,14 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "文章封面图URL为空!");
         }
         article.setCoverUrl(coverUrl);
+
+        // 查询分类
+        ArticleCategory articleCategory = articleCategoryMapper.selectById(articleCategoryId);
+        if (articleCategory == null) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "分类id不存在!");
+        }
+        article.setArticleCategoryId(articleCategory.getId());
+        article.setArticleCategoryName(articleCategory.getName());
         // todo 优化比较新值和旧值是否相等
 
         boolean res = this.updateById(article);

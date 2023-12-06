@@ -41,14 +41,17 @@ public class ArticleController {
     private UserService userService;
 
     @GetMapping("/listPage")
-    public BaseResponse<Page<ArticleVo>> listPage(@RequestParam("currentPageNum") long currentPageNum, @RequestParam("pageSize") long pageSize, HttpServletRequest request) {
+    public BaseResponse<Page<ArticleVo>> listPage(@RequestParam("currentPageNum") long currentPageNum
+                                                , @RequestParam("pageSize") long pageSize
+                                                , @RequestParam("articleCategoryId") long articleCategoryId
+                                                , HttpServletRequest request) {
         if (request == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
         if (currentPageNum < 1 || pageSize < 1) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        Page<ArticleVo> page = articleService.listPage(currentPageNum, pageSize);
+        Page<ArticleVo> page = articleService.listPage(currentPageNum, pageSize, articleCategoryId);
         return ResultUtils.success(page);
     }
 

@@ -21,11 +21,13 @@ public interface ArticleService extends IService<Article> {
 
     /**
      * 分页查询文章列表
+     *
+     * @param pageNum
      * @param currentPageNum
-     * @param pageSize
+     * @param articleCategoryId
      * @return
      */
-    Page<ArticleVo> listPage(long currentPageNum, long pageSize);
+    Page<ArticleVo> listPage(long currentPageNum, long pageSize, long articleCategoryId);
 
     /**
      * 添加文章

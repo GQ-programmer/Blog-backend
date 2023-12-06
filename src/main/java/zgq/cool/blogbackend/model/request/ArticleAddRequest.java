@@ -13,6 +13,10 @@ import java.io.Serializable;
 public class ArticleAddRequest implements Serializable {
 
     /**
+     * 分类id
+     */
+    private Long articleCategoryId;
+    /**
      * 文章标题
      */
     private String title;

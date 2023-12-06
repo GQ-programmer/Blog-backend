@@ -12,6 +12,10 @@ public class ArticleUpdateRequest {
     private Long id;
 
     /**
+     * 分类id
+     */
+    private Long articleCategoryId;
+    /**
      * 文章标题
      */
     private String title;
