@@ -22,8 +22,8 @@ public interface ArticleService extends IService<Article> {
     /**
      * 分页查询文章列表
      *
-     * @param pageNum
      * @param currentPageNum
+     * @param pageSize
      * @param articleCategoryId
      * @return
      */
