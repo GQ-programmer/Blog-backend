@@ -1,11 +1,12 @@
 package zgq.cool.blogbackend.service.impl;
-import java.util.Date;
+import java.util.*;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 import zgq.cool.blogbackend.common.ErrorCode;
 import zgq.cool.blogbackend.constant.UserConstant;
@@ -17,6 +18,7 @@ import zgq.cool.blogbackend.model.request.UserLoginRequest;
 import zgq.cool.blogbackend.model.request.UserRegisterRequest;
 import zgq.cool.blogbackend.model.request.UserUpdatePsdRequest;
 import zgq.cool.blogbackend.model.request.UserUpdateRequest;
+import zgq.cool.blogbackend.model.vo.UserRankingVO;
 import zgq.cool.blogbackend.model.vo.UserVo;
 import zgq.cool.blogbackend.service.ArticleService;
 import zgq.cool.blogbackend.service.UserService;
@@ -24,9 +26,6 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -40,7 +39,8 @@ import java.util.regex.Pattern;
 public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     implements UserService, UserConstant {
 
-
+    @Autowired
+    private UserMapper userMapper;
 
     @Override
     public User login(UserLoginRequest userLoginRequest, HttpServletRequest request) {
@@ -312,6 +312,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         // 移出用户登录态
         request.getSession().removeAttribute(USER_LOGIN_STATE);
         return res;
+    }
+
+    @Override
+    public List<UserRankingVO> listByTopFive() {
+        return userMapper.listByTopFive();
     }
 
 

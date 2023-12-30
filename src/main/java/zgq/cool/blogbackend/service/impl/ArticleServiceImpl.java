@@ -256,6 +256,11 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
         return searchArticleVo;
     }
 
+    @Override
+    public List<ArticleVo> articleRankingByUser() {
+        return articleMapper.articleRankingByUser();
+    }
+
 
 }
 

@@ -42,4 +42,6 @@ public interface ArticleService extends IService<Article> {
     boolean updateArticle(ArticleUpdateRequest articleUpdateRequest, HttpServletRequest request);
 
     List<SearchArticleVo> searchArticle(long searchNum, String searchText);
+
+    List<ArticleVo> articleRankingByUser();
 }

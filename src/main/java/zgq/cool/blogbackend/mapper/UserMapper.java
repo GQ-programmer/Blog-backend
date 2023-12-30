@@ -3,6 +3,9 @@ package zgq.cool.blogbackend.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import zgq.cool.blogbackend.model.pojo.User;
 import zgq.cool.blogbackend.model.vo.SearchArticleVo;
+import zgq.cool.blogbackend.model.vo.UserRankingVO;
+
+import java.util.List;
 
 /**
 * @author 孑然
@@ -12,6 +15,7 @@ import zgq.cool.blogbackend.model.vo.SearchArticleVo;
 */
 public interface UserMapper extends BaseMapper<User> {
 
+    List<UserRankingVO> listByTopFive();
 }
 
 

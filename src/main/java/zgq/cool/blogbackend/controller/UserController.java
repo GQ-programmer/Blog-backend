@@ -12,10 +12,12 @@ import zgq.cool.blogbackend.model.request.UserLoginRequest;
 import zgq.cool.blogbackend.model.request.UserRegisterRequest;
 import zgq.cool.blogbackend.model.request.UserUpdatePsdRequest;
 import zgq.cool.blogbackend.model.request.UserUpdateRequest;
+import zgq.cool.blogbackend.model.vo.UserRankingVO;
 import zgq.cool.blogbackend.model.vo.UserVo;
 import zgq.cool.blogbackend.service.UserService;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * @Author 孑然
@@ -97,6 +99,12 @@ public class UserController implements UserConstant {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
         boolean res = userService.updatePsd(userUpdatePsdRequest, request);
+        return ResultUtils.success(res);
+    }
+
+    @GetMapping("/listByTopFive")
+    public BaseResponse<List<UserRankingVO>> listByTopFive(){
+        List<UserRankingVO> res = userService.listByTopFive();
         return ResultUtils.success(res);
     }
 }

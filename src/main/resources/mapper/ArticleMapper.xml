@@ -37,4 +37,18 @@
             LIMIT 0, #{searchNum}
 
     </select>
+    <select id="articleRankingByUser" resultType="zgq.cool.blogbackend.model.vo.ArticleVo">
+        SELECT a.userId, a.id, a.createTime, a.title, u.avatarUrl  -- 选择需要的列
+        FROM article a
+                 JOIN (
+            SELECT userId, MAX(createTime) AS latest_date  -- 找到每个用户的最新文章发布日期
+            FROM article
+            GROUP BY userId
+        ) b ON a.userId = b.userId AND a.createTime = b.latest_date
+                 LEFT JOIN user u on u.id = a.userId
+        WHERE a.isDelete = 0
+        ORDER BY a.createTime desc
+        LIMIT 5
+
+    </select>
 </mapper>

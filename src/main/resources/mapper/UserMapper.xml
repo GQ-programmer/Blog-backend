@@ -27,5 +27,15 @@
         birthday,gender,userRole,
         createTime,updateTime,isDelete
     </sql>
+    <select id="listByTopFive" resultType="zgq.cool.blogbackend.model.vo.UserRankingVO">
+
+        select a.userId,count(userId) as articleTotal ,u.username, u.avatarUrl
+        from article a
+        LEFT JOIN `user` u on a.userId = u.id
+        where a.isDelete = 0
+        GROUP BY a.userId
+        ORDER BY articleTotal desc
+        LIMIT 5
+    </select>
 
 </mapper>

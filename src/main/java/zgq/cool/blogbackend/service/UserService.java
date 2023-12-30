@@ -6,9 +6,11 @@ import zgq.cool.blogbackend.model.request.UserLoginRequest;
 import zgq.cool.blogbackend.model.request.UserRegisterRequest;
 import zgq.cool.blogbackend.model.request.UserUpdatePsdRequest;
 import zgq.cool.blogbackend.model.request.UserUpdateRequest;
+import zgq.cool.blogbackend.model.vo.UserRankingVO;
 import zgq.cool.blogbackend.model.vo.UserVo;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
 * @author 孑然
@@ -30,4 +32,5 @@ public interface UserService extends IService<User> {
     boolean updatePsd(UserUpdatePsdRequest userUpdatePsdRequest, HttpServletRequest request);
 
 
+    List<UserRankingVO> listByTopFive();
 }

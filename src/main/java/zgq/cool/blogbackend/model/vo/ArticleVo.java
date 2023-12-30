@@ -67,5 +67,16 @@ public class ArticleVo implements Serializable {
      */
     private User createUser;
 
+    /**
+     * 作者Id
+     */
+    private Long userId;
+
+    /**
+     * 用户头像地址
+     */
+    private String avatarUrl;
+
+
     private static final long serialVersionUID = 1L;
 }

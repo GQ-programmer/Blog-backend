@@ -124,4 +124,14 @@ public class ArticleController {
         }
         return ResultUtils.success(searchArticleVos);
     }
+
+    /**
+     * 查询每个用户的最新文章
+     * @return
+     */
+    @GetMapping("/articleRankingByUser")
+    public BaseResponse<List<ArticleVo>> articleRankingByUser() {
+        List<ArticleVo> list = articleService.articleRankingByUser();
+        return ResultUtils.success(list);
+    }
 }

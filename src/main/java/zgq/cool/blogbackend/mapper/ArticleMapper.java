@@ -3,6 +3,7 @@ package zgq.cool.blogbackend.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 import zgq.cool.blogbackend.model.pojo.Article;
+import zgq.cool.blogbackend.model.vo.ArticleVo;
 import zgq.cool.blogbackend.model.vo.SearchArticleVo;
 
 import java.util.List;
@@ -16,6 +17,8 @@ import java.util.List;
 public interface ArticleMapper extends BaseMapper<Article> {
 
     List<SearchArticleVo> searchByText(long searchNum, String searchText);
+
+    List<ArticleVo> articleRankingByUser();
 }
 
 
