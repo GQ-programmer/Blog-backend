@@ -43,6 +43,7 @@
                  JOIN (
             SELECT userId, MAX(createTime) AS latest_date  -- 找到每个用户的最新文章发布日期
             FROM article
+            WHERE isDelete = 0
             GROUP BY userId
         ) b ON a.userId = b.userId AND a.createTime = b.latest_date
                  LEFT JOIN user u on u.id = a.userId
